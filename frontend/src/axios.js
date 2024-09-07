@@ -9,15 +9,15 @@ axiosClient.interceptors.request.use((config) => {
   const token = '123'; //TODO
 
   config.headers.Authorization = `Bearer ${token}`;
-}, (error) => {
 
+  return config;
 });
 
 axiosClient.interceptors.response.use((response) => {
   return response;
 }, (error) => {
   if (error.response && error.response.status === 401) {
-    <Navigate to='/login' />
+    // <Navigate to='/login' />
 
     return error;
   }

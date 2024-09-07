@@ -1,15 +1,17 @@
+import {Link} from "react-router-dom";
+
 export default function Login() {
   return (
     <>
       <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
         Sign in to your account
       </h2>
-      {/*<p className="mt-10 text-center text-sm text-gray-500">*/}
-      {/*  Not a member?{' '}*/}
-      {/*  <a href="#" className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">*/}
-      {/*    Start a 14 day free trial*/}
-      {/*  </a>*/}
-      {/*</p>*/}
+      <p className="mt-10 text-center text-sm text-gray-500">
+        Do not have an account yet? {' '} Please {' '}
+        <Link to="/signup" className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">
+          Sign Up
+        </Link>
+      </p>
 
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
         <form action="#" method="POST" className="space-y-6">
