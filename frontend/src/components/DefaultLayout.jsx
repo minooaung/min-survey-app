@@ -2,6 +2,7 @@ import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuIt
 import {Bars3Icon, BellIcon, UserIcon, XMarkIcon} from '@heroicons/react/24/outline'
 import {Navigate, NavLink, Outlet} from "react-router-dom";
 import {useStateContext} from "../contexts/ContextProvider.jsx";
+import axiosClient from "../axios.js";
 
 // const user = {
 //   name: 'Tom Cook',
@@ -33,7 +34,7 @@ function classNames(...classes) {
 }
 
 export default function DefaultLayout() {
-  const {currentUser, userToken} = useStateContext();
+  const {currentUser, userToken, setCurrentUser, setUserToken} = useStateContext();
 
   if (!userToken) {
     return <Navigate to='/login' />;
@@ -41,7 +42,15 @@ export default function DefaultLayout() {
 
   const logout = (ev) => {
     ev.preventDefault();
-    console.log('logout');
+
+    axiosClient.post('/logout')
+      .then((response) => {
+        setCurrentUser({});
+        setUserToken(null);
+      })
+      .catch((error) => {
+          console.log(error);
+      });
   }
 
   return (
@@ -114,7 +123,7 @@ export default function DefaultLayout() {
                         <MenuItem>
                           <a
                             href="#"
-                            onClick={(ev) => logout(ev)}
+                            onClick={logout}
                             className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100"
                           >
                             Sign Out

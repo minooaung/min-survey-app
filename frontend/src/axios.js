@@ -6,7 +6,7 @@ const axiosClient = axios.create({
 })
 
 axiosClient.interceptors.request.use((config) => {
-  const token = '123'; //TODO
+  const token = localStorage.getItem('ACCESS_TOKEN'); //TODO
 
   config.headers.Authorization = `Bearer ${token}`;
 
@@ -17,6 +17,7 @@ axiosClient.interceptors.response.use((response) => {
   return response;
 }, (error) => {
   if (error.response && error.response.status === 401) {
+    localStorage.removeItem('ACCESS_TOKEN')
     // <Navigate to='/login' />
 
     return error;
