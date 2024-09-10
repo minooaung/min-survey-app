@@ -27,7 +27,8 @@ export default function SurveyView() {
       title: 'Lorem Ipsum',
       description: 'Min Test',
       expire_date: '09/30/2024',
-      status: true
+      status: true,
+      questions: []
     })
   }
 
