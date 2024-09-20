@@ -3,8 +3,12 @@ import {useState} from "react";
 import {PhotoIcon} from "@heroicons/react/24/outline/index.js";
 import TButton from "../components/core/TButton.jsx";
 import axiosClient from "../axios.js";
+import { useNavigate } from "react-router-dom";
+import SurveyQuestions from "../components/SurveyQuestions.jsx";
 
 export default function SurveyView() {
+  const navigate = useNavigate();
+
   const [survey, setSurvey] = useState({
     title: "",
     slug: "",
@@ -16,27 +20,72 @@ export default function SurveyView() {
     questions: []
   });
 
-  const onImageChoose = () => {
-    Console.log("on image choose");
+  const [error, setError] = useState('');
+ 
+  const onImageChoose = (ev) => {    
+    //Console.log("on image choose");
+
+    const file = ev.target.files[0];
+    // console.log(file);
+
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      setSurvey({
+        ...survey,
+        image: file,
+        image_url: reader.result
+      })
+
+      ev.targe.value = "";
+    }
+
+    reader.readAsDataURL(file); 
+
   }
 
   const handleSubmit = (ev) => {
     ev.preventDefault();
 
-    axiosClient.post('/survey', {
-      title: 'Lorem Ipsum',
-      description: 'Min Test',
-      expire_date: '09/30/2024',
-      status: true,
-      questions: []
-    })
+    //console.log(survey);
+
+    const payload = { ...survey };
+
+    if (payload.image && payload.image_url) {
+      payload.image = payload.image_url;
+
+      delete payload.image_url;
+    }
+
+    axiosClient.post('/survey', payload)
+    .then((res) => {
+      // console.log(res);
+
+      navigate('/surveys');
+    }).catch((err) => {
+      if (err && err.response) {
+        setError(err.response.data.message);
+      }
+    });
+  }
+
+  function onSurveyUpdate(survey) {
+    setSurvey({...survey});
   }
 
   return (
     <PageComponent title={"Create New Survey"}>
       <form action={"#"} method={"POST"} onSubmit={handleSubmit}>
         <div className="shadow sm:overflow-hidden sm:rounded-md">
+
+          
+
           <div className="space-y-6 bg-white px-4 py-5 sm:p-6">
+
+          { error && (<div className="bg-red-500 text-white py-2 px-3 rounded-lg">
+            {error}
+          </div>)}
+
             {/*Image*/}
             <div>
               <label className="block text-sm font-medium text-gray-700">
@@ -162,6 +211,8 @@ export default function SurveyView() {
               </div>
             </div>
             {/*Active*/}
+
+            <SurveyQuestions survey={survey} onSurveyUpdate={onSurveyUpdate} />
 
           </div>
           <div className="bg-gray-50 px-4 py-3 text-right sm:px-6">

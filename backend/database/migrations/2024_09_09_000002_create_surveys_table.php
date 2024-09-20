@@ -14,7 +14,7 @@ return new class extends Migration
     {
         Schema::create('surveys', function (Blueprint $table) {
             $table->id();
-            $table->foreignId(User::class, 'user_id');
+            $table->foreignIdFor(User::class, 'user_id');
             $table->string('image', 255)->nullable();
             $table->string('title', 1000);
             $table->string('slug', 1000);
@@ -31,10 +31,5 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('surveys');
-
-//        Schema::table('surveys', function (Blueprint $table) {
-//            $table->dropForeign(['user_id']);
-//            $table->dropColumn('user_id');
-//        });
     }
 };
