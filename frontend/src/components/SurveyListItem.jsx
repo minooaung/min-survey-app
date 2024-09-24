@@ -1,6 +1,10 @@
 import TButton from "./core/TButton.jsx";
-import {ArrowTopRightOnSquareIcon, PencilIcon, TrashIcon} from "@heroicons/react/24/outline/index.js";
-export default function SurveyListItem({survey, onDeleteClick}) {
+import {
+  ArrowTopRightOnSquareIcon,
+  PencilIcon,
+  TrashIcon,
+} from "@heroicons/react/24/outline/index.js";
+export default function SurveyListItem({ survey, onDeleteClick }) {
   return (
     <div className="flex flex-col py-4 px-6 shadow-md bg-white hover:bg-gray-50 h-[470px]">
       <img
@@ -25,12 +29,17 @@ export default function SurveyListItem({survey, onDeleteClick}) {
           </TButton>
 
           {survey.id && (
-            <TButton onClick={ev => onDeleteClick(survey.id)} circle link color="red">
+            <TButton
+              onClick={(ev) => onDeleteClick(survey.id)}
+              circle
+              link
+              color="red"
+            >
               <TrashIcon className="w-5 h-5" />
             </TButton>
           )}
         </div>
       </div>
     </div>
-  )
+  );
 }

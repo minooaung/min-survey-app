@@ -1,6 +1,7 @@
 import {Link} from "react-router-dom";
 import {useRef, useState} from "react";
 import axiosClient from "../axios.js";
+import {useStateContext} from "../contexts/ContextProvider.jsx";
 
 export default function Signup() {
   // const [fullName, setFullName] = useState('');
@@ -8,17 +9,19 @@ export default function Signup() {
   // const [password, setPassword] = useState('');
   // const [passwordConfirmation, setPasswordConfirmation] = useState('');
 
+  const { setCurrentUser, setUserToken } = useStateContext();
 
   const nameRef = useRef();
   const emailRef = useRef();
   const passwordRef = useRef();
   const passwordConfirmationRef = useRef();
 
-  //const [error, setError] = useState(null);
   const [error, setError] = useState({__html: ''});
 
   const onSubmit = (ev) => {
     ev.preventDefault();
+
+    setError({ __html: "" });
 
     const payload = {
       name: nameRef.current.value,
@@ -29,14 +32,18 @@ export default function Signup() {
 
     axiosClient.post("/signup", payload)
       .then(({ data }) => {
-        console.log(data);
+        // console.log(data);
+        // console.log(data.user);
+        // console.log(data.token);
+
+        setCurrentUser(data.user);
+        setUserToken(data.token);
       })
       .catch((error) => {
         if (error.response) {
           const signupResponseErrors = Object.values(error.response.data.errors).reduce((accum, next) => [...accum, ...next], []);
-          //const signupResponseErrors = Object.values(error.response.data.errors);
 
-          console.log(signupResponseErrors);
+          //console.log(signupResponseErrors);
           setError({__html: signupResponseErrors.join('<br>')});
         }
         console.log(error);
