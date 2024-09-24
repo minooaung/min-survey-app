@@ -72,4 +72,9 @@ class AuthController extends Controller
 //            'message' => 'User logged out successfully!',
 //        ], 200); // HTTP status code 200: OK
     }
+
+    public function me(Request $request) 
+    {
+        return $request->user();
+    }
 }

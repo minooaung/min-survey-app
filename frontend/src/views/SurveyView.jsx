@@ -1,13 +1,16 @@
 import PageComponent from "../components/PageComponent.jsx";
-import {useState} from "react";
-import {PhotoIcon} from "@heroicons/react/24/outline/index.js";
+import { useEffect, useState } from "react";
+import { PhotoIcon } from "@heroicons/react/24/outline/index.js";
 import TButton from "../components/core/TButton.jsx";
 import axiosClient from "../axios.js";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import SurveyQuestions from "../components/SurveyQuestions.jsx";
+import { v4 as uuidv4 } from "uuid";
 
 export default function SurveyView() {
   const navigate = useNavigate();
+
+  const { id } = useParams();
 
   const [survey, setSurvey] = useState({
     title: "",
@@ -17,12 +20,13 @@ export default function SurveyView() {
     image: null,
     image_url: null,
     expire_date: "",
-    questions: []
+    questions: [],
   });
 
-  const [error, setError] = useState('');
- 
-  const onImageChoose = (ev) => {    
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const onImageChoose = (ev) => {
     //Console.log("on image choose");
 
     const file = ev.target.files[0];
@@ -34,15 +38,14 @@ export default function SurveyView() {
       setSurvey({
         ...survey,
         image: file,
-        image_url: reader.result
-      })
+        image_url: reader.result,
+      });
 
       ev.targe.value = "";
-    }
+    };
 
-    reader.readAsDataURL(file); 
-
-  }
+    reader.readAsDataURL(file);
+  };
 
   const handleSubmit = (ev) => {
     ev.preventDefault();
@@ -57,34 +60,60 @@ export default function SurveyView() {
       delete payload.image_url;
     }
 
-    axiosClient.post('/survey', payload)
-    .then((res) => {
-      // console.log(res);
+    axiosClient
+      .post("/survey", payload)
+      .then((res) => {
+        // console.log(res);
 
-      navigate('/surveys');
-    }).catch((err) => {
-      if (err && err.response) {
-        setError(err.response.data.message);
-      }
+        navigate("/surveys");
+      })
+      .catch((err) => {
+        if (err && err.response) {
+          setError(err.response.data.message);
+        }
+      });
+  };
+
+  function onQuestionsUpdate(questions) {
+    setSurvey({
+      ...survey,
+      questions,
     });
   }
 
-  function onSurveyUpdate(survey) {
-    setSurvey({...survey});
-  }
+  const addQuestion = () => {
+    survey.questions.push({
+      id: uuidv4(),
+      type: "text",
+      question: "",
+      description: "",
+      data: {},
+    });
+    setSurvey({ ...survey });
+  };
+
+  useEffect(() => {
+    if (id) {
+      setLoading(true);
+
+      axiosClient.get(`/survey/${id}`).then(({ data }) => {
+        console.log(data);
+        setSurvey(data.data);
+        setLoading(false);
+      });
+    }
+  }, []);
 
   return (
     <PageComponent title={"Create New Survey"}>
       <form action={"#"} method={"POST"} onSubmit={handleSubmit}>
         <div className="shadow sm:overflow-hidden sm:rounded-md">
-
-          
-
           <div className="space-y-6 bg-white px-4 py-5 sm:p-6">
-
-          { error && (<div className="bg-red-500 text-white py-2 px-3 rounded-lg">
-            {error}
-          </div>)}
+            {error && (
+              <div className="bg-red-500 text-white py-2 px-3 rounded-lg">
+                {error}
+              </div>
+            )}
 
             {/*Image*/}
             <div>
@@ -101,8 +130,8 @@ export default function SurveyView() {
                 )}
                 {!survey.image_url && (
                   <span className="flex justify-center  items-center text-gray-400 h-12 w-12 overflow-hidden rounded-full bg-gray-100">
-                      <PhotoIcon className="w-8 h-8" />
-                    </span>
+                    <PhotoIcon className="w-8 h-8" />
+                  </span>
                 )}
                 <button
                   type="button"
@@ -199,10 +228,7 @@ export default function SurveyView() {
                 />
               </div>
               <div className="ml-3 text-sm">
-                <label
-                  htmlFor="comments"
-                  className="font-medium text-gray-700"
-                >
+                <label htmlFor="comments" className="font-medium text-gray-700">
                   Active
                 </label>
                 <p className="text-gray-500">
@@ -212,8 +238,14 @@ export default function SurveyView() {
             </div>
             {/*Active*/}
 
-            <SurveyQuestions survey={survey} onSurveyUpdate={onSurveyUpdate} />
+            <button type="button" onClick={addQuestion}>
+              Add question
+            </button>
 
+            <SurveyQuestions
+              questions={survey.questions}
+              onQuestionsUpdate={onQuestionsUpdate}
+            />
           </div>
           <div className="bg-gray-50 px-4 py-3 text-right sm:px-6">
             <TButton>Save</TButton>
