@@ -17,6 +17,7 @@ import { Navigate, NavLink, Outlet } from "react-router-dom";
 import { useStateContext } from "../contexts/ContextProvider.jsx";
 import axiosClient from "../axios.js";
 import { useEffect } from "react";
+import SuccessNotification from "./SuccessNotification.jsx";
 
 // const user = {
 //   name: 'Tom Cook',
@@ -77,14 +78,6 @@ export default function DefaultLayout() {
 
   return (
     <>
-      {/*
-        This example requires updating your template:
-
-        ```
-        <html class="h-full bg-gray-100">
-        <body class="h-full">
-        ```
-      */}
       <div className="min-h-full">
         <Disclosure as="nav" className="bg-gray-800">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -121,15 +114,6 @@ export default function DefaultLayout() {
               </div>
               <div className="hidden md:block">
                 <div className="ml-4 flex items-center md:ml-6">
-                  {/*<button*/}
-                  {/*  type="button"*/}
-                  {/*  className="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"*/}
-                  {/*>*/}
-                  {/*  <span className="absolute -inset-1.5" />*/}
-                  {/*  <span className="sr-only">View notifications</span>*/}
-                  {/*  <BellIcon aria-hidden="true" className="h-6 w-6" />*/}
-                  {/*</button>*/}
-
                   {/* Profile dropdown */}
                   <Menu as="div" className="relative ml-3">
                     <div>
@@ -225,6 +209,8 @@ export default function DefaultLayout() {
         </Disclosure>
 
         <Outlet />
+
+        <SuccessNotification />
       </div>
     </>
   );
