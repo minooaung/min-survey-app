@@ -21,11 +21,20 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/me', [AuthController::class, 'me']);
 
-    Route::post('/logout', [AuthController::class, 'logout']);
-
-    Route::apiResource('survey', SurveyController::class);
+    Route::post('/logout', [AuthController::class, 'logout']);    
 
     Route::get('/dashboard', [DashboardController::class, 'index']);
+
+    // This single line of route will do the following routes
+    Route::resource('survey', SurveyController::class);
+    // GET       /survey           -> index
+    // GET       /survey/create    -> create
+    // POST      /survey           -> store
+    // GET       /survey/{id}      -> show
+    // GET       /survey/{id}/edit -> edit
+    // PUT/PATCH /survey/{id}      -> update
+    // DELETE    /survey/{id}      -> destroy
+
 });
 
 Route::post('/signup', [AuthController::class, 'signup']);

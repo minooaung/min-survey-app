@@ -22,7 +22,7 @@ class DashboardController extends Controller
         //print_r($total); exit;
 
         // Latest Survey
-        $latest = Survey::where('user_id', $user->id)->latest('created_at')->first();
+        $latestSurvey = Survey::where('user_id', $user->id)->latest('created_at')->first();
 
         // print_r($latest); exit;
         // print_r($latest->title); exit;
@@ -54,7 +54,7 @@ class DashboardController extends Controller
 
         $response = [
             'totalSurveys' => $total,
-            'latestSurvey' => $latest ? new SurveyResourceDashboard($latest) : null,
+            'latestSurvey' => $latestSurvey ? new SurveyResourceDashboard($latestSurvey) : null,
             'totalAnswers' => $totalAnswers,
             'latestAnswers' => SurveyAnswerResource::collection($latestAnswers)
         ];        
