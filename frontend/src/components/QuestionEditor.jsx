@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useStateContext } from "../contexts/ContextProvider";
 import { PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { v4 as uuidv4 } from "uuid";
 
 export default function QuestionEditor({
   index = 0,

@@ -8,7 +8,7 @@ import axiosClient from "../axios.js";
 import PaginationLinks from "../components/PaginationLinks.jsx";
 
 export default function Surveys() {
-  // const { surveys } = useStateContext();
+  const { successNotification, showSuccessNotification } = useStateContext();
 
   const [surveys, setSurveys] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -16,8 +16,13 @@ export default function Surveys() {
 
   // console.log(surveys);
 
-  const onDeleteClick = () => {
-    console.log("on delete click");
+  const onDeleteClick = (id) => {
+    if (id && window.confirm("Are you sure you want to delete this survey?")) {
+      axiosClient.delete(`/survey/${id}`).then(() => {
+        getSurveys();
+        showSuccessNotification("Survey has been deleted successfully");
+      });
+    }
   };
 
   const onPageClick = (link) => {
@@ -57,6 +62,12 @@ export default function Surveys() {
         <div className="text-center text-lg">Loading....</div>
       ) : (
         <div>
+          {surveys.length === 0 && (
+            <div className="text-center py-8 text-gray-800">
+              You do not have survey created
+            </div>
+          )}
+
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-3">
             {surveys.map((survey) => (
               <SurveyListItem
@@ -67,7 +78,9 @@ export default function Surveys() {
             ))}
           </div>
 
-          <PaginationLinks meta={meta} onPageClick={onPageClick} />
+          {surveys.length > 0 && (
+            <PaginationLinks meta={meta} onPageClick={onPageClick} />
+          )}
         </div>
       )}
     </PageComponent>

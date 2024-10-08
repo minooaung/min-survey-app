@@ -1,15 +1,15 @@
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 
-export default function TButton ({
-                                   color = "indigo",
-                                   to = "",
-                                   circle = false,
-                                   href = "",
-                                   link = false,
-                                   target = "_blank",
-                                   onClick = () => {},
-                                   children,
-                                 }) {
+export default function TButton({
+  color = "indigo",
+  to = "",
+  circle = false,
+  href = "",
+  link = false,
+  target = "_blank",
+  onClick = () => {},
+  children,
+}) {
   let classes = [
     "flex",
     "items-center",
